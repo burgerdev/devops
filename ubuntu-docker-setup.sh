@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -19,6 +19,14 @@ add-apt-repository \
    stable"
 
 apt-get update
-apt-get install -yq docker-ce
+apt-get install -yq docker-ce docker-compose
 
 systemctl restart docker.service
+
+cat >/usr/local/bin/docker-cleanup <<EOF
+#!/bin/bash
+docker ps -q | xargs -r docker kill
+docker ps -aq | xargs -r docker rm
+EOF
+
+chmod a+x /usr/local/bin/docker-cleanup
