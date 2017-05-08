@@ -10,7 +10,8 @@ apt-get install -y kubelet kubeadm kubectl kubernetes-cni
 if [[ "$KUBEROLE" == "master" ]];
 then
     kubeadm init
+    export KUBECONFIG=/etc/kubernetes/admin.conf
+    echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> /root/.bashrc
     kubectl taint nodes --all node-role.kubernetes.io/master-
     kubectl apply -f http://docs.projectcalico.org/v2.1/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
-    echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> $HOME/.bashrc
 fi
