@@ -21,4 +21,7 @@ cat >>/etc/td-agent/td-agent.conf <<EOF
   flush_interval 10s # for testing
 </match>
 EOF
+
+td-agent-gem install fluent-plugin-elasticsearch --no-document
+systemctl restart td-agent.service
 fi
