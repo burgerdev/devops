@@ -11,7 +11,7 @@ app_dir=/usr/local/lib/kibana-${kibana_ver}-linux-x86_64
 
 ln -s ${app_dir}/bin/kibana /usr/local/bin/
 
-chown -R $app_user: /usr/local/lib/elasticsearch-5.0.2
+chown -R $app_user: ${app_dir}
 
 cat >/etc/systemd/system/kibana.service <<EOF
 [Unit]
