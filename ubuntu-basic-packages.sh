@@ -2,7 +2,7 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
-apt-get update
+apt-get update -qq
 apt-get upgrade -qq
 
 apt-get install -qq \

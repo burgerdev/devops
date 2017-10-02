@@ -2,10 +2,10 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
-apt-get update
-apt-get upgrade -yq
+apt-get update -qq
+apt-get upgrade -qq
 
-apt-get install -yq \
+apt-get install -qq \
     apt-transport-https \
     ca-certificates \
     curl \
@@ -18,8 +18,8 @@ add-apt-repository \
    $(lsb_release -cs) \
    stable"
 
-apt-get update
-apt-get install -yq docker-ce docker-compose
+apt-get update -qq
+apt-get install -qq docker-ce docker-compose
 
 systemctl restart docker.service
 

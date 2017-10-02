@@ -3,7 +3,8 @@
 es_ver=5.4.0
 es_user=elasticsearch
 
-apt-get install -yq default-jdk
+apt-get update -qq
+apt-get install -qq default-jdk
 
 useradd -m -k /etc/skel ${es_user}
 
