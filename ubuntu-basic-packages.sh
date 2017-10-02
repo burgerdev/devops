@@ -7,7 +7,7 @@ apt-get upgrade -qq
 
 apt-get install -qq \
     vim most screen htop pv \
-    curl wget net-tools netcat \
+    curl wget jq net-tools netcat \
     make git etckeeper
 
 # set up git

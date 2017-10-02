@@ -2,8 +2,10 @@
 
 dotfiles="${DEVOPS_DOTFILES:-https://raw.githubusercontent.com/burgerdev/dotfiles/master}"
 
-if (( "${#DEVOPS_DOTFILES_CURL[*]}" < 1))
+if (( $# > 0 ))
 then
+    DEVOPS_DOTFILES=("$@")
+else
     DEVOPS_DOTFILES_CURL=(curl -sL)
 fi
 

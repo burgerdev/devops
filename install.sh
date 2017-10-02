@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 if (( "${#DEVOPS_FETCH[*]}" < 1 ))
 then
     DEVOPS_FETCH=(cat)
@@ -17,38 +15,43 @@ then
     if ! which curl 2>&1 >/dev/null
     then
         apt-get update && apt-get install -qq curl
+        if [[ "$?" != 0 ]]
+        then
+            echo "Could not install basic dependencies" >&2
+            exit 1
+        fi
     fi
     DEVOPS_FETCH=(curl -sL)
     DEVOPS_LOCATION="https://raw.githubusercontent.com/burgerdev/devops/master"
 fi
 
-if (( "${#DEVOPS_SUBS[*]}" < 1 ))
+if (( $# < 1 ))
 then
     DEVOPS_SUBS=(ubuntu-basic-packages add-dotfiles add-github-public-keys \
                  ubuntu-docker-setup ubuntu-kubernetes-setup)
+else
+    DEVOPS_SUBS=("$@")
 fi
 
 
-logs=`mktemp`
-clean=false
+function run_sub_installer {
+    logs=`mktemp`
 
-function clean_logs {
-    if [[ "${clean}" != "true" ]]
+    set -o pipefail
+    "${DEVOPS_FETCH[@]}" "${DEVOPS_LOCATION}/$1" | bash 2>&1 > "${logs}"
+
+    status=$?
+    if [[ "$status" != 0 ]]
     then
         echo "*** FAILED ***"
         cat "${logs}" >&2
     fi
-    rm "${logs}"
+    rm -f "${logs}"
+
+    return $status
 }
 
-trap clean_logs EXIT
-
-
-function run_sub_installer {
-    set -e -o pipefail
-    "${DEVOPS_FETCH[@]}" "${DEVOPS_LOCATION}/$1" | bash 2>&1 > "${logs}"
-}
-
+echo "Installing: ${DEVOPS_SUBS[*]}."
 
 for f in "${DEVOPS_SUBS[@]}"
 do
@@ -56,6 +59,11 @@ do
     then
         echo "*** running '$f.sh' ***"
         run_sub_installer "$f.sh"
+        status=$?
+        if [[ "$status" != 0 ]]
+        then
+            exit $status
+        fi
     fi
 done
 
