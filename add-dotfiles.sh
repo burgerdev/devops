@@ -1,7 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
-dotfiles="/tmp/dotfiles-$$"
+dotfiles="${DEVOPS_DOTFILES:-https://raw.githubusercontent.com/burgerdev/dotfiles/master}"
 
-git clone https://github.com/burgerdev/dotfiles.git "$dotfiles"
-cp "$dotfiles"/bashrc $HOME/.bashrc
-cp "$dotfiles"/vimrc $HOME/.vimrc
+if (( "${#DEVOPS_DOTFILES_CURL[*]}" < 1))
+then
+    DEVOPS_DOTFILES_CURL=(curl -sL)
+fi
+
+"${DEVOPS_DOTFILES_CURL[@]}" "${dotfiles}/install.sh" | \
+    env DOTFILES_REMOTE="${DEVOPS_DOTFILES_REMOTE:-true}" bash
