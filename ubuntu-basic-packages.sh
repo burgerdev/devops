@@ -3,6 +3,13 @@
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
-apt-get upgrade -y
+apt-get upgrade -qq
 
-apt-get install -yq vim most git htop pv jq curl wget net-tools make screen netcat
+apt-get install -qq \
+    vim most screen htop pv \
+    curl wget net-tools netcat \
+    make git etckeeper
+
+# set up git
+git config --global user.name "${GIT_AUTHOR_NAME:-Markus Rudy}"
+git config --global user.email "${GIT_AUTHOR_EMAIL:-markus@rudymentaer.de}"
