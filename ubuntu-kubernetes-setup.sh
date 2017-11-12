@@ -18,4 +18,5 @@ then
     # kubectl create -f https://git.io/kube-dashboard
     # enable helm by disabling RBAC, see https://stackoverflow.com/a/43513182
     kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts
+    kubectl apply --namespace kube-system -f https://raw.githubusercontent.com/meltwater/docker-cleanup/master/contrib/k8s-daemonset.yml
 fi
