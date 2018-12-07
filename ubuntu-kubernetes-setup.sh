@@ -9,14 +9,10 @@ apt-get install -qq kubelet kubeadm kubectl kubernetes-cni
 
 if [[ "$KUBEROLE" == "master" ]];
 then
-    kubeadm init
+    kubeadm init --pod-network-cidr=192.168.0.0/16
     export KUBECONFIG=/etc/kubernetes/admin.conf
     echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> /root/.bashrc
     kubectl taint nodes --all node-role.kubernetes.io/master-
-    kubectl apply -f http://docs.projectcalico.org/v2.1/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
-    # defunct
-    # kubectl create -f https://git.io/kube-dashboard
-    # enable helm by disabling RBAC, see https://stackoverflow.com/a/43513182
-    kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts
-    kubectl apply --namespace kube-system -f https://raw.githubusercontent.com/meltwater/docker-cleanup/master/contrib/k8s-daemonset.yml
+    kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
+    kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
 fi
