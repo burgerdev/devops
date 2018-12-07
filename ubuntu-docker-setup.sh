@@ -19,7 +19,7 @@ add-apt-repository \
    stable"
 
 apt-get update -qq
-apt-get install -qq docker-ce docker-compose
+apt-get install -qq docker-ce
 
 systemctl restart docker.service
 
