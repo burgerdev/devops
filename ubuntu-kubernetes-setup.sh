@@ -3,7 +3,7 @@
 ## !!!! this file retrieves the pod network insecurely !!!!
 
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" >/etc/apt/sources.list.d/kubernetes.list
+echo "deb http://apt.kubernetes.io/ kubernetes-$(lsb_release -cs) main" >/etc/apt/sources.list.d/kubernetes.list
 apt-get update -qq
 apt-get install -qq kubelet kubeadm kubectl kubernetes-cni
 
