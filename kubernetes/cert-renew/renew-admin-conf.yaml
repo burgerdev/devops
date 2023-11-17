@@ -1,0 +1,66 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: renew-admin-conf
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: kubeadm
+        image: nixery.dev/shell/kubernetes
+        command: ["kubeadm", "certs", "renew", "admin.conf"]
+        volumeMounts:
+        - name: root
+          mountPath: /etc/kubernetes
+      volumes:
+      - name: root
+        hostPath:
+          path: /etc/kubernetes
+      restartPolicy: Never
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: serve-admin-conf
+spec:
+  selector:
+    matchLabels:
+      app: serve-admin-conf
+  template:
+    metadata:
+      name: serve-admin-conf
+      labels:
+        app: serve-admin-conf
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: backdoor
+        image: alpine:latest
+        command: ["/bin/sh", "-c", "while true; do sleep 1000; done" ]
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: root
+          mountPath: /etc/kubernetes
+      volumes:
+      - name: root
+        hostPath:
+          path: /etc/kubernetes
